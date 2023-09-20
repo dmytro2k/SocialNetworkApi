@@ -1,25 +1,18 @@
-import { type Request, type Response } from 'express'
-import { StatusCodes } from 'http-status-codes'
-import { validationResult } from 'express-validator'
-import { BadRequestError } from '../errors'
-import jwt from 'jsonwebtoken'
+import { BadRequestError, NotFoundError } from '../errors'
 import bcrypt from 'bcryptjs'
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 export const hashPassword = async (password: string): Promise<string> => {
   const salt = await bcrypt.genSalt(13)
   return await bcrypt.hash(password, salt)
 }
 
-export const createJWT = (id: string, name: string) => {
-  return jwt.sign({ id, name }, process.env.JWT_SECRET!, {
-    expiresIn: process.env.JWT_LIFETIME,
-  })
-}
-
 export const comparePasswords = async (
   candidatePassword: string,
   password: string
-): Promise<void|Error> => {
+): Promise<void> => {
   const isMatch = await bcrypt.compare(candidatePassword, password)
 
   if(!isMatch){
@@ -27,9 +20,16 @@ export const comparePasswords = async (
   }
 }
 
-export const validate = (req: Request, res: Response) => {
-  const errors = validationResult(req)
-  if (!errors.isEmpty()) {
-    throw new BadRequestError('Bad request data')
+export const checkUserExistence = async (expectation: boolean, email: string): Promise<void> => {
+  const userExists = (await prisma.user.findUnique({ where: { email } }))
+  ? true
+  : false
+
+  if (!userExists && expectation) {
+    throw new NotFoundError(`User with email: '${email}' does not exists`)
+  }
+
+  if (userExists && !expectation) {
+    throw new BadRequestError(`User with email: '${email}' already exists`)
   }
 }

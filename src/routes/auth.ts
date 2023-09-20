@@ -4,18 +4,17 @@ import { body } from 'express-validator'
 
 const router = express.Router()
 
-const registerValidateReq = [
+const loginVal= [
+  body('email').isEmail(),
+  body('password').notEmpty().isString(),
+]
+
+const registerVal = [
   body('name').notEmpty().isString(),
-  body('email').isEmail(),
-  body('password').notEmpty().isString(),
+  ...loginVal
 ]
 
-const loginValidateReq = [
-  body('email').isEmail(),
-  body('password').notEmpty().isString(),
-]
-
-router.route('/register').post(registerValidateReq, register)
-router.route('/login').post(loginValidateReq, login)
+router.route('/register').post(registerVal, register)
+router.route('/login').post(loginVal, login)
 
 export default router

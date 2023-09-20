@@ -6,10 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const CustomError_1 = __importDefault(require("./CustomError"));
 const http_status_codes_1 = require("http-status-codes");
 class UnauthenticatedError extends CustomError_1.default {
-    statusCode;
+    statusCode = http_status_codes_1.StatusCodes.UNAUTHORIZED;
     constructor(message) {
         super(message, http_status_codes_1.StatusCodes.UNAUTHORIZED);
-        this.statusCode = http_status_codes_1.StatusCodes.UNAUTHORIZED;
     }
 }
 exports.default = UnauthenticatedError;
