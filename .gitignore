@@ -1,3 +1,6 @@
+.idea
 node_modules
-# Keep environment variables out of version control
+dist
+
 .env
+.DS_Store
