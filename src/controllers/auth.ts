@@ -1,39 +1,59 @@
-import { type Request, type Response } from 'express'
-import { StatusCodes } from 'http-status-codes'
-import { PrismaClient } from '@prisma/client'
-import { validate } from '../middlewares/validation'
-import { createJWT } from '../middlewares/authentication'
-import {
-  hashPassword,
-  comparePasswords,
-  checkUserExistence
-} from '../middlewares/auth'
-
-const prisma = new PrismaClient()
+import { type Request, type Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
+import { PrismaProvider } from '../dataProviders/prisma';
+import { BadRequestError, NotFoundError } from '../errors';
+import { createJWT } from '../utils/auth';
+import { hashPassword, comparePasswords } from '../utils/auth';
 
 export const login = async (req: Request, res: Response) => {
-  validate(req, res)
+  const { email, password } = req.body;
 
-  let { email, password } = req.body
+  const user = await PrismaProvider.getInstance().user.findUnique({
+    where: {
+      email,
+    },
+    select: {
+      id: true,
+      name: true,
+      password: true,
+    },
+  });
 
-  await checkUserExistence(true, email)
+  if (!user) {
+    throw new NotFoundError('User cannot be found');
+  }
 
-  const user = (await prisma.user.findUnique({ where: { email } }))!
-  await comparePasswords(password, user.password)
+  await comparePasswords(password, user.password);
 
-  const jwt = createJWT(user.id, user.name)
-  res.status(StatusCodes.OK).json({ data: { user: { id: user.id, name: user.name }, jwt } })
-}
+  const jwt = createJWT(user.id);
+
+  res.status(StatusCodes.OK).json({ data: { user: { id: user.id, name: user.name }, jwt } });
+};
 
 export const register = async (req: Request, res: Response) => {
-  validate(req, res)
+  const { name, email, password } = req.body;
 
-  let { name, email, password } = req.body
-  password = await hashPassword(password)
+  const existedUser = await PrismaProvider.getInstance().user.count({
+    where: {
+      email,
+    },
+  });
 
-  await checkUserExistence(false, email)
+  if (existedUser) {
+    throw new BadRequestError('Email is already taken');
+  }
 
-  const user = await prisma.user.create({ data: { name, email, password } })
-  const jwt = createJWT(user.id, user.name)
-  res.status(StatusCodes.CREATED).json({ data: { user: { id: user.id, name: user.name }, jwt } })
-}
+  const hashedPassword = await hashPassword(password);
+
+  const user = await PrismaProvider.getInstance().user.create({
+    data: {
+      name,
+      email,
+      password: hashedPassword,
+    },
+  });
+
+  const jwt = createJWT(user.id);
+
+  res.status(StatusCodes.CREATED).json({ data: { user: { id: user.id, name: user.name }, jwt } });
+};

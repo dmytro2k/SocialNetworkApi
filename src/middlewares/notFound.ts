@@ -1,3 +1,3 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 
-export const notFoundMiddleware = (req: Request, res: Response) => res.status(404).send('Route does not exist')
+export const notFoundMiddleware = (req: Request, res: Response) => res.status(404).send('Route does not exist');

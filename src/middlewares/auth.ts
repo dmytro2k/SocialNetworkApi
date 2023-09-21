@@ -1,35 +1,30 @@
-import { BadRequestError, NotFoundError } from '../errors'
-import bcrypt from 'bcryptjs'
-import { PrismaClient } from '@prisma/client'
+import { type Request, type Response, type NextFunction } from 'express';
+import jwt, { type JwtPayload } from 'jsonwebtoken';
+import { UnauthenticatedError } from '../errors';
+import { PrismaProvider } from '../dataProviders/prisma';
 
-const prisma = new PrismaClient()
+export const authenticateUser = async (req: Request, res: Response, next: NextFunction) => {
+  const authHeader = req.headers.authorization;
 
-export const hashPassword = async (password: string): Promise<string> => {
-  const salt = await bcrypt.genSalt(13)
-  return await bcrypt.hash(password, salt)
-}
-
-export const comparePasswords = async (
-  candidatePassword: string,
-  password: string
-): Promise<void> => {
-  const isMatch = await bcrypt.compare(candidatePassword, password)
-
-  if(!isMatch){
-    throw new BadRequestError('Incorrect password')
-  }
-}
-
-export const checkUserExistence = async (expectation: boolean, email: string): Promise<void> => {
-  const userExists = (await prisma.user.findUnique({ where: { email } }))
-  ? true
-  : false
-
-  if (!userExists && expectation) {
-    throw new NotFoundError(`User with email: '${email}' does not exists`)
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    throw new UnauthenticatedError('Invalid Authentication');
   }
 
-  if (userExists && !expectation) {
-    throw new BadRequestError(`User with email: '${email}' already exists`)
+  const token = authHeader.split(' ')[1];
+
+  const payload = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+
+  const user = await PrismaProvider.getInstance().user.findUnique({
+    where: {
+      id: payload.id,
+    },
+  });
+
+  if (!user) {
+    throw new UnauthenticatedError('User cannot be found');
   }
-}
+
+  req.user = user;
+
+  next();
+};
