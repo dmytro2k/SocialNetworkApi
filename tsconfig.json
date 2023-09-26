@@ -7,10 +7,19 @@
     "outDir": "dist",
     "strict": true,
     "moduleResolution": "node",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "plugins": [
+      {
+        "transform": "typia/lib/transform"
+      }
+    ],
+    "strictNullChecks": true
   },
   "ts-node": {
     "files": true
   },
-  "include": ["@types", "src"]
+  "include": [
+    "@types",
+    "src"
+  ]
 }

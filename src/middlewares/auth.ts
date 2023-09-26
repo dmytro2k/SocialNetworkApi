@@ -1,7 +1,9 @@
 import { type Request, type Response, type NextFunction } from 'express';
 import jwt, { type JwtPayload } from 'jsonwebtoken';
 import { UnauthenticatedError } from '../errors';
-import { PrismaProvider } from '../dataProviders/prisma';
+import { DrizzleProvider } from '../database/dataProvider';
+import { users } from '../database/User/schema';
+import { eq } from 'drizzle-orm';
 
 export const authenticateUser = async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
@@ -14,11 +16,8 @@ export const authenticateUser = async (req: Request, res: Response, next: NextFu
 
   const payload = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
 
-  const user = await PrismaProvider.getInstance().user.findUnique({
-    where: {
-      id: payload.id,
-    },
-  });
+  const db = DrizzleProvider.getInstance()
+  const user = (await db.select().from(users).where(eq(users.id, payload.id)))[0]
 
   if (!user) {
     throw new UnauthenticatedError('User cannot be found');
