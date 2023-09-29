@@ -1,18 +1,18 @@
 import express from 'express';
 import { getPost, getUserPosts, createPost, updatePost, deletePost } from '../controllers/posts';
 import { authenticateUser } from '../middlewares/auth';
-import { validatePost } from '../middlewares/validation';
+import { validateCreatePost, validateUpdatePost, validateGetPosts, validateMinimalPost } from '../middlewares/validation';
 
 const router = express.Router();
 
 router
   .route('/')
-  .get(authenticateUser, getUserPosts)
-  .post(authenticateUser, validatePost, createPost);
+  .get(authenticateUser, validateGetPosts, getUserPosts)
+  .post(authenticateUser, validateCreatePost, createPost);
 router
   .route('/:id')
-  .get(authenticateUser, getPost)
-  .patch(authenticateUser, validatePost, updatePost)
-  .delete(authenticateUser, deletePost);
+  .get(authenticateUser, validateMinimalPost, getPost)
+  .patch(authenticateUser, validateUpdatePost, updatePost)
+  .delete(authenticateUser, validateMinimalPost, deletePost);
 
 export default router;

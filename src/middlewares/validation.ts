@@ -1,49 +1,88 @@
 import { type Request, type Response, type NextFunction } from 'express';
 import typia, { tags } from "typia";
-import { BadRequestError } from '../errors';
 
 export const validateRegister = (req: Request, res: Response, next: NextFunction): void => {
-  const results = typia.createValidate<registerValidation>()(req.body)
-
-  if(!results.success){
-    throw new BadRequestError('Register data validation failed');
-  }
-
+  typia.assert<RegisterRequestValidation>(req)
   next();
 }
 
 export const validateLogin = (req: Request, res: Response, next: NextFunction): void => {
-  const results = typia.createValidate<loginValidation>()(req.body)
-
-  if(!results.success){
-    throw new BadRequestError('Login data validation failed');
-  }
-
+  typia.assert<LoginRequestValidation>(req)
   next();
 }
 
-export const validatePost = (req: Request, res: Response, next: NextFunction): void => {
-  const results = typia.createValidate<postValidation>()(req.body)
-  
-  if(!results.success){
-    throw new BadRequestError('Post data validation failed');
-  }
-
+export const validateCreatePost = (req: Request, res: Response, next: NextFunction): void => {
+  typia.assert<CreatePostRequestValidation>(req)
   next();
 }
 
-export interface registerValidation {
-  name: string
-  email: string & tags.Format<"email">
-  password: string
+export const validateUpdatePost = (req: Request, res: Response, next: NextFunction): void => {
+  typia.assert<UpdatePostRequestValidation>(req)
+  next();
 }
 
-export interface loginValidation {
-  email: string & tags.Format<'email'>
-  password: string
+export const validateMinimalPost = (req: Request, res: Response, next: NextFunction): void => {
+  typia.assert<MinimalPostRequestValidation>(req)
+  next();
 }
 
-export interface postValidation {
-  title: string
-  content: string
+export const validateGetPosts = (req: Request, res: Response, next: NextFunction): void => {
+  typia.assert<GetPostsRequestValidation>(req)
+  next();
 }
+
+export type ValidatedRegisterRequest = RegisterRequestValidation & Request<unknown, unknown, unknown, unknown>
+export type ValidatedLoginRequest = LoginRequestValidation & Request<unknown, unknown, unknown, unknown>
+export type ValidatedCreatePostRequest = CreatePostRequestValidation & Request<unknown, unknown, unknown, unknown>
+export type ValidatedUpdatePostRequest = UpdatePostRequestValidation & Request<unknown, unknown, unknown, unknown>
+export type ValidatedMinimalPostRequest = MinimalPostRequestValidation & Request<unknown, unknown, unknown, unknown>
+export type ValidatedGetPostsRequest = GetPostsRequestValidation & Request<unknown, unknown, unknown, unknown>
+
+interface RegisterRequestValidation {
+  body: {
+    name: string
+    email: string & tags.Format<"email">
+    password: string
+  }
+}
+
+interface LoginRequestValidation {
+  body: {
+    email: string & tags.Format<'email'>
+    password: string
+  }
+}
+
+interface CreatePostRequestValidation {
+  body: {
+    title: string
+    content: string
+  }
+}
+
+interface UpdatePostRequestValidation {
+  body: {
+    title: string
+    content: string
+  }
+  params: {
+    id: string & tags.Format<'uuid'>
+  }
+}
+
+interface MinimalPostRequestValidation {
+  params: {
+    id: string & tags.Format<'uuid'>
+  }
+}
+
+interface GetPostsRequestValidation {
+  query: {
+    userId?: string & tags.Format<'uuid'>
+  }
+}
+
+
+
+
+
