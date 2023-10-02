@@ -4,20 +4,24 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import { DrizzleProvider } from './database/dataProvider';
+import express from 'express';
+import cors from 'cors'
+
 import { users } from './database/User/schema';
 import { posts } from './database/Post/schema';
-
-import express from 'express';
 import authRouter from './routes/auth';
 import postsRouter from './routes/posts';
+import usersRouter from './routes/users';
 import { notFoundMiddleware } from './middlewares/notFound';
 import { errorHandlerMiddleware } from './middlewares/errorHandler';
 
 const app = express();
 app.use(express.json());
+app.use(cors())
 
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/posts', postsRouter);
+app.use('/api/v1/users', usersRouter);
 
 app.use(errorHandlerMiddleware);
 app.use(notFoundMiddleware);

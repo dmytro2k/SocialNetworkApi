@@ -1,5 +1,13 @@
 import { type Request, type Response, type NextFunction } from 'express';
-import typia, { tags } from "typia";
+import typia from "typia";
+import {
+  RegisterRequestValidation,
+  LoginRequestValidation,
+  CreatePostRequestValidation,
+  UpdatePostRequestValidation,
+  DeletePostRequestValidation,
+  GetUserWithPostsRequestValidation
+} from '../utils/validationIntefaces'
 
 export const validateRegister = (req: Request, res: Response, next: NextFunction): void => {
   typia.assert<RegisterRequestValidation>(req)
@@ -21,68 +29,19 @@ export const validateUpdatePost = (req: Request, res: Response, next: NextFuncti
   next();
 }
 
-export const validateMinimalPost = (req: Request, res: Response, next: NextFunction): void => {
-  typia.assert<MinimalPostRequestValidation>(req)
+export const validateDeletePost = (req: Request, res: Response, next: NextFunction): void => {
+  typia.assert<DeletePostRequestValidation>(req)
   next();
 }
 
-export const validateGetPosts = (req: Request, res: Response, next: NextFunction): void => {
-  typia.assert<GetPostsRequestValidation>(req)
+export const validateGetUserWithPosts = (req: Request, res: Response, next: NextFunction): void => {
+  typia.assert<GetUserWithPostsRequestValidation>(req)
   next();
 }
 
-export type ValidatedRegisterRequest = RegisterRequestValidation & Request<unknown, unknown, unknown, unknown>
-export type ValidatedLoginRequest = LoginRequestValidation & Request<unknown, unknown, unknown, unknown>
-export type ValidatedCreatePostRequest = CreatePostRequestValidation & Request<unknown, unknown, unknown, unknown>
-export type ValidatedUpdatePostRequest = UpdatePostRequestValidation & Request<unknown, unknown, unknown, unknown>
-export type ValidatedMinimalPostRequest = MinimalPostRequestValidation & Request<unknown, unknown, unknown, unknown>
-export type ValidatedGetPostsRequest = GetPostsRequestValidation & Request<unknown, unknown, unknown, unknown>
-
-interface RegisterRequestValidation {
-  body: {
-    name: string
-    email: string & tags.Format<"email">
-    password: string
-  }
-}
-
-interface LoginRequestValidation {
-  body: {
-    email: string & tags.Format<'email'>
-    password: string
-  }
-}
-
-interface CreatePostRequestValidation {
-  body: {
-    title: string
-    content: string
-  }
-}
-
-interface UpdatePostRequestValidation {
-  body: {
-    title: string
-    content: string
-  }
-  params: {
-    id: string & tags.Format<'uuid'>
-  }
-}
-
-interface MinimalPostRequestValidation {
-  params: {
-    id: string & tags.Format<'uuid'>
-  }
-}
-
-interface GetPostsRequestValidation {
-  query: {
-    userId?: string & tags.Format<'uuid'>
-  }
-}
-
-
-
-
-
+export type ValidatedRegisterRequest = RegisterRequestValidation & Request<unknown, unknown, unknown>
+export type ValidatedLoginRequest = LoginRequestValidation & Request<unknown, unknown, unknown>
+export type ValidatedCreatePostRequest = CreatePostRequestValidation & Request<unknown, unknown, unknown>
+export type ValidatedUpdatePostRequest = UpdatePostRequestValidation & Request<unknown, unknown, unknown>
+export type ValidatedDeletePostRequest = DeletePostRequestValidation & Request<unknown, unknown, unknown>
+export type ValidatedGetUserWithPostsRequest = GetUserWithPostsRequestValidation & Request
