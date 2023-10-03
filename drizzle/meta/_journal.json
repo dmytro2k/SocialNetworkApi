@@ -15,6 +15,41 @@
       "when": 1695664165573,
       "tag": "0001_nebulous_king_bedlam",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1696358508242,
+      "tag": "0002_silent_logan",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1696360450549,
+      "tag": "0003_cold_next_avengers",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1696362495865,
+      "tag": "0004_demonic_bloodstrike",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1696363077450,
+      "tag": "0005_mute_nighthawk",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1696363099338,
+      "tag": "0006_reflective_greymalkin",
+      "breakpoints": true
     }
   ]
 }

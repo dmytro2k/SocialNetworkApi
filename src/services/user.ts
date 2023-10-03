@@ -4,6 +4,7 @@ import { BadRequestError, NotFoundError } from '../errors';
 import { createJWT } from '../utils/auth';
 import { hashPassword, comparePasswords } from '../utils/auth';
 import { users } from '../database/User/schema';
+import { posts } from '../database/Post/schema';
 
 export const userRegister = async (params: { name: string, email: string, password: string }) => {
   const { name, email, password } = params;
