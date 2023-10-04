@@ -1,45 +1,73 @@
 import { tags } from "typia";
+import { Request } from "express";
+import { ParamsDictionary } from 'express-serve-static-core'
+import { ParsedQs } from 'qs'
+
+
+export interface TypedRequest<BodyType, ParamsType extends ParamsDictionary, QueryType extends ParsedQs> extends Request {
+  body: BodyType,
+  params: ParamsType,
+  query: QueryType
+}
+
 
 export interface RegisterRequestValidation {
-  body: {
-    name: string
-    email: string & tags.Format<"email">
-    password: string
-  }
+  body: RegisterBody
 }
+
+export interface RegisterBody {
+  name: string
+  email: string & tags.Format<"email">
+  password: string
+}
+
 
 export interface LoginRequestValidation {
-  body: {
-    email: string & tags.Format<'email'>
-    password: string
-  }
+  body: LoginrBody
 }
+
+export interface LoginrBody {
+  email: string & tags.Format<'email'>
+  password: string
+}
+
 
 export interface CreatePostRequestValidation {
-  body: {
-    title: string
-    content: string
-  }
+  body: CreatePostBody
 }
 
-export interface UpdatePostRequestValidation {
-  body: {
-    id: string & tags.Format<'uuid'>
-    title?: string
-    content?: string
-  }
+export interface CreatePostBody {
+  title: string
+  content: string
 }
+
+
+export interface PatchPostRequestValidation {
+  body: PatchPostBody
+}
+
+export interface PatchPostBody {
+  id: string & tags.Format<'uuid'>
+  title?: string
+  content?: string
+}
+
 
 export interface DeletePostRequestValidation {
-  body: {
-    id: string & tags.Format<'uuid'>
-  }
+  body: DeletePostBody
 }
 
+export interface DeletePostBody {
+  id: string & tags.Format<'uuid'>
+}
+
+
 export interface GetUserWithPostsRequestValidation {
-  params: {
-    id: string & tags.Format<'uuid'>
-  }
+  params: GetUserWithPostsParams
+}
+
+export interface GetUserWithPostsParams extends ParamsDictionary {
+  id: string & tags.Format<'uuid'>
 }
 
 

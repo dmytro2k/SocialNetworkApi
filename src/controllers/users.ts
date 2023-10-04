@@ -1,8 +1,8 @@
 import { type Request, type Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { getAllUserPosts } from '../services/post';
-import { getUserById } from '../services/user';
-import { ValidatedGetUserWithPostsRequest } from '../middlewares/validation';
+import { getUserWIthPosts } from '../services/user';
+import { TypedRequest, GetUserWithPostsParams } from '../utils/validationIntefaces';
 
 export const getMeWithPosts = async (req: Request, res: Response) => {
   const { user } = req
@@ -11,10 +11,9 @@ export const getMeWithPosts = async (req: Request, res: Response) => {
   res.status(StatusCodes.OK).send({ user: { name: user!.name }, posts })
 };
 
-export const getUserWithPosts = async (req: ValidatedGetUserWithPostsRequest, res: Response) => {
+export const getUserWithPosts = async (req: TypedRequest<{}, GetUserWithPostsParams, {}>, res: Response) => {
   const id = req.params.id
-  const { name } = await getUserById(id)
-  const posts = await getAllUserPosts(id)
+  const userWithPosts = await getAllUserPosts(id)
 
-  res.status(StatusCodes.OK).send({ user: { name }, posts })
+  res.status(StatusCodes.OK).send(userWithPosts)
 };

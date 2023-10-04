@@ -1,9 +1,9 @@
 import { type Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { ValidatedCreatePostRequest, ValidatedUpdatePostRequest, ValidatedDeletePostRequest } from '../middlewares/validation';
+import { TypedRequest, CreatePostBody, PatchPostBody, DeletePostBody } from '../utils/validationIntefaces';
 import { createNewPost, deletePostById, updatePost } from '../services/post';
 
-export const createPost = async (req: ValidatedCreatePostRequest, res: Response) => {
+export const createPost = async (req: TypedRequest<CreatePostBody, {}, {}>, res: Response) => {
   const { user } = req;
   const { title, content } = req.body;
 
@@ -12,7 +12,7 @@ export const createPost = async (req: ValidatedCreatePostRequest, res: Response)
   res.status(StatusCodes.CREATED).json({ post });
 };
 
-export const patchPost = async (req: ValidatedUpdatePostRequest, res: Response) => {
+export const patchPost = async (req: TypedRequest<PatchPostBody, {}, {}>, res: Response) => {
   const { user } = req;
   const { id, title, content } = req.body
   const possibleUpdates = { title, content }
@@ -22,7 +22,7 @@ export const patchPost = async (req: ValidatedUpdatePostRequest, res: Response) 
   res.status(StatusCodes.OK).json({ post });
 };
 
-export const deletePost = async (req: ValidatedDeletePostRequest, res: Response) => {
+export const deletePost = async (req: TypedRequest<DeletePostBody, {}, {}>, res: Response) => {
   const { user } = req;
   const { id } = req.body;
 

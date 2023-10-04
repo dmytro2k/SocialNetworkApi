@@ -4,7 +4,7 @@ import {
   RegisterRequestValidation,
   LoginRequestValidation,
   CreatePostRequestValidation,
-  UpdatePostRequestValidation,
+  PatchPostRequestValidation,
   DeletePostRequestValidation,
   GetUserWithPostsRequestValidation
 } from '../utils/validationIntefaces'
@@ -25,7 +25,7 @@ export const validateCreatePost = (req: Request, res: Response, next: NextFuncti
 }
 
 export const validateUpdatePost = (req: Request, res: Response, next: NextFunction): void => {
-  typia.assert<UpdatePostRequestValidation>(req)
+  typia.assert<PatchPostRequestValidation>(req)
   next();
 }
 
@@ -38,10 +38,3 @@ export const validateGetUserWithPosts = (req: Request, res: Response, next: Next
   typia.assert<GetUserWithPostsRequestValidation>(req)
   next();
 }
-
-export type ValidatedRegisterRequest = RegisterRequestValidation & Request<unknown, unknown, unknown>
-export type ValidatedLoginRequest = LoginRequestValidation & Request<unknown, unknown, unknown>
-export type ValidatedCreatePostRequest = CreatePostRequestValidation & Request<unknown, unknown, unknown>
-export type ValidatedUpdatePostRequest = UpdatePostRequestValidation & Request<unknown, unknown, unknown>
-export type ValidatedDeletePostRequest = DeletePostRequestValidation & Request<unknown, unknown, unknown>
-export type ValidatedGetUserWithPostsRequest = GetUserWithPostsRequestValidation & Request

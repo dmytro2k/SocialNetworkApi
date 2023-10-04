@@ -49,3 +49,9 @@ export const getUserById = async (id: string) => {
   const [user] = await DrizzleProvider.getInstance().select().from(users).where(eq(users.id, id))
   return user
 }
+
+export const getUserWIthPosts = async (id: string) => {
+  const userWithPosts = await DrizzleProvider.getInstance().query.users.findFirst({ where: (eq(users.id, id)), columns: { name: true }, with: { posts: { with: { likes: true, comments: true } } } })
+
+  return userWithPosts
+}
