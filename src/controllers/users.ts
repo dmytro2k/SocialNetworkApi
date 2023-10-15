@@ -13,7 +13,7 @@ export const getMeWithPosts = async (req: Request, res: Response) => {
 
 export const getUserWithPosts = async (req: TypedRequest<{}, GetUserWithPostsParams, {}>, res: Response) => {
   const id = req.params.id
-  const userWithPosts = await getAllUserPosts(id)
+  const userWithPosts = await getUserWIthPosts(id)
 
   res.status(StatusCodes.OK).send(userWithPosts)
 };
