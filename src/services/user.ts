@@ -3,11 +3,10 @@ import { DrizzleProvider } from '../database/dataProvider';
 import { BadRequestError, NotFoundError } from '../errors';
 import { createJWT } from '../utils/auth';
 import { hashPassword, comparePasswords } from '../utils/auth';
-import { users } from '../database/User/schema';
+import { users } from '../database/Schema';
+import { createProfile } from './profile';
 
-export const userRegister = async (params: { name: string; email: string; password: string }) => {
-  const { name, email, password } = params;
-
+export const userRegister = async (email: string, password: string) => {
   const existedUser = await getUserByEmail(email);
 
   if (existedUser) {
@@ -19,18 +18,18 @@ export const userRegister = async (params: { name: string; email: string; passwo
   const [user] = await DrizzleProvider.getInstance()
     .insert(users)
     .values({
-      name,
       email,
       password: hashedPassword,
     })
     .returning();
 
+  const name = user.email.split('@')[0];
+  await createProfile(name, user.id);
+
   return createJWT(user.id);
 };
 
-export const userLogin = async (params: { email: string; password: string }) => {
-  const { email, password } = params;
-
+export const userLogin = async (email: string, password: string) => {
   const user = await getUserByEmail(email);
 
   if (!user) {
@@ -55,8 +54,9 @@ export const getUserById = async (id: string) => {
 export const getUserWIthPosts = async (id: string) => {
   const userWithPosts = await DrizzleProvider.getInstance().query.users.findFirst({
     where: eq(users.id, id),
-    columns: { name: true },
+    columns: { email: true },
     with: {
+      profiles: true,
       posts: {
         with: { likes: { columns: { userId: true } } },
       },

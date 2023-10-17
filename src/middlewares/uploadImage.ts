@@ -13,7 +13,10 @@ const multerStorage = (dirPath: string) => {
   });
 };
 
-export const uploadPostImage = multer({ storage: multerStorage('images/post/originals'), fileFilter: (_, file, cb) => validateImageFile(file, cb) });
+export const uploadPostImage = multer({
+  storage: multerStorage('images/post/originals'),
+  fileFilter: (_, file, cb) => validateImageFile(file, cb),
+});
 export const uploadAvatarImage = multer({
   storage: multerStorage('images/avatar/originals'),
   fileFilter: (_, file, cb) => validateImageFile(file, cb),

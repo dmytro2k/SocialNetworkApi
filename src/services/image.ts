@@ -1,15 +1,15 @@
 import { eq } from 'drizzle-orm';
-import { DrizzleProvider } from '../database/dataProvider';
-import { images } from '../database/Image/schema';
 import path from 'path';
+import { DrizzleProvider } from '../database/dataProvider';
+import { images } from '../database/Schema';
 import { NotFoundError } from '../errors';
 import { deleteImageFile } from '../utils/image';
 
-export const createImage = async (file: Express.Multer.File) => {
+export const createImage = async (file: Express.Multer.File, imageType?: 'avatar') => {
   const extension = path.extname(file.filename);
   const name = path.basename(file.filename, extension);
 
-  const [image] = await DrizzleProvider.getInstance().insert(images).values({ name, extension }).returning();
+  const [image] = await DrizzleProvider.getInstance().insert(images).values({ name, extension, imageType }).returning();
   return image.id;
 };
 
@@ -17,7 +17,7 @@ export const deleteImageById = async (id: string) => {
   const image = await getImageById(id);
 
   if (!image) {
-    throw new NotFoundError('Not found such a post');
+    throw new NotFoundError('Not found such image');
   }
   const imagename = image.name + image.extension;
 

@@ -7,6 +7,7 @@ import {
   PatchPostRequestValidation,
   DeletePostRequestValidation,
   GetUserWithPostsRequestValidation,
+  PatchProfileRequestValidation,
 } from '../utils/validationIntefaces';
 import { BadRequestError } from '../errors';
 
@@ -25,7 +26,7 @@ export const validateCreatePost = (req: Request, res: Response, next: NextFuncti
   next();
 };
 
-export const validateUpdatePost = (req: Request, res: Response, next: NextFunction): void => {
+export const validatePatchPost = (req: Request, res: Response, next: NextFunction): void => {
   typia.assert<PatchPostRequestValidation>(req);
   next();
 };
@@ -37,6 +38,11 @@ export const validateDeletePost = (req: Request, res: Response, next: NextFuncti
 
 export const validateGetUserWithPosts = (req: Request, res: Response, next: NextFunction): void => {
   typia.assert<GetUserWithPostsRequestValidation>(req);
+  next();
+};
+
+export const validatePatchProfile = (req: Request, res: Response, next: NextFunction): void => {
+  typia.assert<PatchProfileRequestValidation>(req);
   next();
 };
 

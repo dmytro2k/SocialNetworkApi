@@ -1,13 +1,11 @@
 import { eq } from 'drizzle-orm';
 import { DrizzleProvider } from '../database/dataProvider';
 import { NotFoundError, BadRequestError, UnauthenticatedError } from '../errors';
-import { posts } from '../database/Post/schema';
-import { User } from '../database/User/schema';
-import { deleteImageById } from './image';
+import { posts } from '../database/Schema';
+import { User } from '../database/Schema';
+import { deleteImageById, createImage } from './image';
 
-export const createNewPost = async (params: { title: string; content: string; user: User | undefined; imageId: string | null }) => {
-  const { title, content, user, imageId } = params;
-
+export const createNewPost = async (title: string, content: string, user?: User, imageId?: string) => {
   if (title === '' || content === '') {
     throw new BadRequestError('title and content should not be empty');
   }
@@ -16,9 +14,7 @@ export const createNewPost = async (params: { title: string; content: string; us
   return post;
 };
 
-export const updatePost = async (params: { id: string; possibleUpdates: { title?: string; content?: string }; user: User | undefined }) => {
-  const { id, possibleUpdates, user } = params;
-
+export const updatePost = async (id: string, possibleUpdates: { title?: string; content?: string; imageId?: string }, user?: User) => {
   const postUpdates = Object.fromEntries(Object.entries(possibleUpdates).filter((el) => el[1] !== undefined && el[1] !== ''));
 
   if (!postUpdates) {
@@ -27,15 +23,15 @@ export const updatePost = async (params: { id: string; possibleUpdates: { title?
 
   let post = await getPostById(id);
 
-  if (user!.id !== post.userId) {
-    throw new UnauthenticatedError('Only Author can update a post');
-  }
-
   if (!post) {
     throw new NotFoundError('Not found such a post');
   }
 
-  if (post.imageId) {
+  if (user!.id !== post.userId) {
+    throw new UnauthenticatedError('Only Author can update a post');
+  }
+
+  if (post.imageId && possibleUpdates.imageId) {
     deleteImageById(post.imageId);
   }
 
@@ -43,16 +39,15 @@ export const updatePost = async (params: { id: string; possibleUpdates: { title?
   return post;
 };
 
-export const deletePostById = async (params: { id: string; user: User | undefined }) => {
-  const { id, user } = params;
+export const deletePostById = async (id: string, user?: User) => {
   const post = await getPostById(id);
-
-  if (user!.id !== post.userId) {
-    throw new UnauthenticatedError('Only Author can delete a post');
-  }
 
   if (!post) {
     throw new NotFoundError('Not found such a post');
+  }
+
+  if (user!.id !== post.userId) {
+    throw new UnauthenticatedError('Only Author can delete a post');
   }
 
   if (post.imageId) {
@@ -64,6 +59,10 @@ export const deletePostById = async (params: { id: string; user: User | undefine
 
 export const getPostById = async (id: string) => {
   const [post] = await DrizzleProvider.getInstance().select().from(posts).where(eq(posts.id, id));
+
+  if (!post) {
+    throw new NotFoundError('Not found such a post');
+  }
 
   return post;
 };

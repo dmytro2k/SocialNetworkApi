@@ -10,20 +10,14 @@ export interface TypedRequest<BodyType, ParamsType extends ParamsDictionary, Que
 }
 
 export interface RegisterRequestValidation {
-  body: RegisterBody;
-}
-
-export interface RegisterBody {
-  name: string;
-  email: string & tags.Format<'email'>;
-  password: string;
+  body: authBody;
 }
 
 export interface LoginRequestValidation {
-  body: LoginrBody;
+  body: authBody;
 }
 
-export interface LoginrBody {
+export interface authBody {
   email: string & tags.Format<'email'>;
   password: string;
 }
@@ -61,4 +55,13 @@ export interface GetUserWithPostsRequestValidation {
 
 export interface GetUserWithPostsParams extends ParamsDictionary {
   id: string & tags.Format<'uuid'>;
+}
+
+export interface PatchProfileRequestValidation {
+  body: PatchProfileBody;
+}
+
+export interface PatchProfileBody {
+  name?: string;
+  status?: string;
 }

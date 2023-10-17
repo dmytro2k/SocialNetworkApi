@@ -9,8 +9,8 @@ export const createPost = async (req: TypedRequest<CreatePostBody, {}, {}>, res:
   const { user, file } = req;
   const { title, content } = req.body;
 
-  const imageId = file ? await createImage(file) : null;
-  const post = await createNewPost({ title, content, user, imageId });
+  const imageId = file ? await createImage(file) : undefined;
+  const post = await createNewPost(title, content, user, imageId);
 
   res.status(StatusCodes.CREATED).json({ post });
 
@@ -22,11 +22,11 @@ export const createPost = async (req: TypedRequest<CreatePostBody, {}, {}>, res:
 export const patchPost = async (req: TypedRequest<PatchPostBody, {}, {}>, res: Response) => {
   const { user, file } = req;
   const { id, title, content } = req.body;
-  const imageId = file ? await createImage(file) : null;
+  const imageId = file ? await createImage(file) : undefined;
 
   const possibleUpdates = { title, content, imageId };
 
-  const post = await updatePost({ id, possibleUpdates, user });
+  const post = await updatePost(id, possibleUpdates, user);
 
   res.status(StatusCodes.OK).json({ post });
 
@@ -39,7 +39,7 @@ export const deletePost = async (req: TypedRequest<DeletePostBody, {}, {}>, res:
   const { user } = req;
   const { id } = req.body;
 
-  await deletePostById({ id, user });
+  await deletePostById(id, user);
 
   res.status(StatusCodes.NO_CONTENT).send();
 };
