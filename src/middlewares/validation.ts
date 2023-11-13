@@ -6,9 +6,14 @@ import {
   CreatePostRequestValidation,
   PatchPostRequestValidation,
   DeletePostRequestValidation,
-  GetUserWithPostsRequestValidation,
-  PatchProfileRequestValidation,
-} from '../utils/validationIntefaces';
+  UpdateMyProfileRequestValidation,
+  GetProfileRequestValidation,
+  GetImageRequestValidation,
+  CreateFollowerRequestValidation,
+  DeleteFollowerRequestValidation,
+  GetProfilesRequesValidation,
+  GetPostsRequestValidation,
+} from '../utils/validationIntefaces/';
 import { BadRequestError } from '../errors';
 
 export const validateRegister = (req: Request, res: Response, next: NextFunction): void => {
@@ -36,13 +41,38 @@ export const validateDeletePost = (req: Request, res: Response, next: NextFuncti
   next();
 };
 
-export const validateGetUserWithPosts = (req: Request, res: Response, next: NextFunction): void => {
-  typia.assert<GetUserWithPostsRequestValidation>(req);
+export const validateGetPosts = (req: Request, res: Response, next: NextFunction): void => {
+  typia.assert<GetPostsRequestValidation>(req);
   next();
 };
 
-export const validatePatchProfile = (req: Request, res: Response, next: NextFunction): void => {
-  typia.assert<PatchProfileRequestValidation>(req);
+export const validateUpdateMyProfile = (req: Request, res: Response, next: NextFunction): void => {
+  typia.assert<UpdateMyProfileRequestValidation>(req);
+  next();
+};
+
+export const validateGetProfile = (req: Request, res: Response, next: NextFunction): void => {
+  typia.assert<GetProfileRequestValidation>(req);
+  next();
+};
+
+export const validateGetProfiles = (req: Request, res: Response, next: NextFunction): void => {
+  typia.assert<GetProfilesRequesValidation>(req);
+  next();
+};
+
+export const validateGetImage = (req: Request, res: Response, next: NextFunction): void => {
+  typia.assert<GetImageRequestValidation>(req);
+  next();
+};
+
+export const validateCreateFollower = (req: Request, res: Response, next: NextFunction): void => {
+  typia.assert<CreateFollowerRequestValidation>(req);
+  next();
+};
+
+export const validateDeleteFollower = (req: Request, res: Response, next: NextFunction): void => {
+  typia.assert<DeleteFollowerRequestValidation>(req);
   next();
 };
 

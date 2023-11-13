@@ -1,33 +1,26 @@
-import { pgTable, text, primaryKey, uuid } from 'drizzle-orm/pg-core';
+import { pgTable, text, uuid } from 'drizzle-orm/pg-core';
 import { InferSelectModel, InferInsertModel, relations } from 'drizzle-orm';
 import { users, images } from '../index';
 
-export const profiles = pgTable(
-  'profiles',
-  {
-    id: uuid('id').defaultRandom().unique(),
-    name: text('name').notNull(),
-    status: text('status'),
-    userId: uuid('user_id')
-      .notNull()
-      .references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
-    imageId: uuid('image_id').references(() => images.id, { onDelete: 'set null', onUpdate: 'cascade' }),
-  },
-  (table) => {
-    return {
-      pk: primaryKey(table.id, table.userId),
-    };
-  }
-);
+export const profiles = pgTable('profiles', {
+  profileId: uuid('profile_id').defaultRandom().primaryKey(),
+  profileName: text('profile_name').notNull(),
+  profileStatus: text('profile_status'),
+  userId: uuid('user_id')
+    .unique()
+    .notNull()
+    .references(() => users.userId, { onDelete: 'cascade', onUpdate: 'cascade' }),
+  imageId: uuid('image_id').references(() => images.imageId, { onDelete: 'set null', onUpdate: 'cascade' }),
+});
 
 export const profilesRelations = relations(profiles, ({ one }) => ({
   user: one(users, {
     fields: [profiles.userId],
-    references: [users.id],
+    references: [users.userId],
   }),
   image: one(images, {
     fields: [profiles.imageId],
-    references: [images.id],
+    references: [images.imageId],
   }),
 }));
 

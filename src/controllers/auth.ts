@@ -1,18 +1,18 @@
 import { NextFunction, type Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { TypedRequest, authBody } from '../utils/validationIntefaces';
-import { userRegister, userLogin } from '../services/user';
+import { TypedRequest, authBody } from '../utils/validationIntefaces/';
+import { userRegister, userLogin } from '../services/auth';
 
 export const register = async (req: TypedRequest<authBody, {}, {}>, res: Response, next: NextFunction) => {
-  const { email, password } = req.body;
-  const token = await userRegister(email, password);
+  const { userEmail, userPassword } = req.body;
+  const { token, userId } = await userRegister({ userEmail, userPassword });
 
-  res.status(StatusCodes.CREATED).json({ token });
+  res.status(StatusCodes.CREATED).json({ token, userId });
 };
 
 export const login = async (req: TypedRequest<authBody, {}, {}>, res: Response, next: NextFunction) => {
-  const { email, password } = req.body;
-  const token = await userLogin(email, password);
+  const { userEmail, userPassword } = req.body;
+  const { token, userId } = await userLogin({ userEmail, userPassword });
 
-  res.status(StatusCodes.OK).json({ token });
+  res.status(StatusCodes.OK).json({ token, userId });
 };

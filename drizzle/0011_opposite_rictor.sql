@@ -1,1 +1,0 @@
-ALTER TABLE "images" RENAME COLUMN "type" TO "imageType";

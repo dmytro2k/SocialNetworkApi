@@ -5,106 +5,15 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1695663743761,
-      "tag": "0000_regular_living_mummy",
+      "when": 1699875083920,
+      "tag": "0000_hard_annihilus",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "5",
-      "when": 1695664165573,
-      "tag": "0001_nebulous_king_bedlam",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1696358508242,
-      "tag": "0002_silent_logan",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1696360450549,
-      "tag": "0003_cold_next_avengers",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "5",
-      "when": 1696362495865,
-      "tag": "0004_demonic_bloodstrike",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "5",
-      "when": 1696363077450,
-      "tag": "0005_mute_nighthawk",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "5",
-      "when": 1696363099338,
-      "tag": "0006_reflective_greymalkin",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "5",
-      "when": 1697133515958,
-      "tag": "0007_strange_may_parker",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "5",
-      "when": 1697133649932,
-      "tag": "0008_adorable_mercury",
-      "breakpoints": true
-    },
-    {
-      "idx": 9,
-      "version": "5",
-      "when": 1697382519784,
-      "tag": "0009_rare_tyrannus",
-      "breakpoints": true
-    },
-    {
-      "idx": 10,
-      "version": "5",
-      "when": 1697384929710,
-      "tag": "0010_dizzy_the_hand",
-      "breakpoints": true
-    },
-    {
-      "idx": 11,
-      "version": "5",
-      "when": 1697389178292,
-      "tag": "0011_opposite_rictor",
-      "breakpoints": true
-    },
-    {
-      "idx": 12,
-      "version": "5",
-      "when": 1697389490600,
-      "tag": "0012_cheerful_wasp",
-      "breakpoints": true
-    },
-    {
-      "idx": 13,
-      "version": "5",
-      "when": 1697559311992,
-      "tag": "0013_sweet_scourge",
-      "breakpoints": true
-    },
-    {
-      "idx": 14,
-      "version": "5",
-      "when": 1697564143541,
-      "tag": "0014_groovy_toad",
+      "when": 1699882729078,
+      "tag": "0001_vengeful_rocket_raccoon",
       "breakpoints": true
     }
   ]

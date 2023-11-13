@@ -5,9 +5,9 @@ import { posts, profiles } from '../index';
 export const imageTypeEnum = pgEnum('type', ['post', 'avatar']);
 
 export const images = pgTable('images', {
-  id: uuid('id').defaultRandom().primaryKey().unique(),
-  name: uuid('name').notNull().unique(),
-  extension: text('extension').notNull(),
+  imageId: uuid('image_id').defaultRandom().primaryKey(),
+  imageName: uuid('image_name').notNull().unique(),
+  imageExtension: text('image_extension').notNull(),
   imageType: imageTypeEnum('image_type').default('post').notNull(),
 });
 

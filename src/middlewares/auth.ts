@@ -14,7 +14,7 @@ export const verifyToken = async (req: Request, res: Response, next: NextFunctio
 
   const payload = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
 
-  const user = await getUserById(payload.id)
+  const user = await getUserById({ userId: payload.id });
 
   if (!user) {
     throw new UnauthenticatedError('User cannot be found');

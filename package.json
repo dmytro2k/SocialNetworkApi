@@ -11,7 +11,7 @@
     "linter:fix": "npx eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "postinstall": "ts-patch install",
     "migration:generate": "drizzle-kit generate:pg",
-    "migration:push": "drizzle-kit push:pg"
+    "migration:push": "node -r esbuild-register src/database/migrate.ts"
   },
   "keywords": [],
   "author": "",

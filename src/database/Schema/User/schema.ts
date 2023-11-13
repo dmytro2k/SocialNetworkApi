@@ -1,11 +1,11 @@
 import { pgTable, text, uuid } from 'drizzle-orm/pg-core';
 import { InferSelectModel, InferInsertModel, relations } from 'drizzle-orm';
-import { posts, likes, comments, profiles } from '../index';
+import { posts, likes, comments, profiles, followers } from '../index';
 
 export const users = pgTable('users', {
-  id: uuid('id').defaultRandom().primaryKey().unique(),
-  email: text('email').notNull().unique(),
-  password: text('password').notNull(),
+  userId: uuid('user_id').defaultRandom().primaryKey(),
+  userEmail: text('user_email').notNull().unique(),
+  userPassword: text('user_password').notNull(),
 });
 
 export const usersRelations = relations(users, ({ one, many }) => ({
@@ -13,6 +13,8 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   likes: many(likes),
   comments: many(comments),
   profiles: one(profiles),
+  follower: many(followers, { relationName: 'follower' }),
+  followedUser: many(followers, { relationName: 'followed_user' }),
 }));
 
 export type User = InferSelectModel<typeof users>;

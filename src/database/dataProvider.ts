@@ -1,5 +1,8 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import { Pool } from 'pg';
 import { NodePgDatabase, drizzle } from 'drizzle-orm/node-postgres';
+import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import * as schema from './Schema';
 
 const pool = new Pool({
@@ -15,5 +18,10 @@ export class DrizzleProvider {
     }
 
     return this.drizzleInstance;
+  }
+
+  public static async runMigrations() {
+    await migrate(this.getInstance(), { migrationsFolder: './drizzle' });
+    pool.end();
   }
 }
