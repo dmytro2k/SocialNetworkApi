@@ -1,82 +1,100 @@
 import { type Request, type Response, type NextFunction } from 'express';
 import typia from 'typia';
 import {
-  RegisterRequestValidation,
-  LoginRequestValidation,
+  AuthRequestValidation,
   CreatePostRequestValidation,
-  PatchPostRequestValidation,
+  EditPostRequestValidation,
   DeletePostRequestValidation,
-  UpdateMyProfileRequestValidation,
+  EditProfileRequestValidation,
   GetProfileRequestValidation,
   GetImageRequestValidation,
-  CreateFollowerRequestValidation,
-  DeleteFollowerRequestValidation,
+  FollowerRequestValidation,
   GetProfilesRequesValidation,
   GetPostsRequestValidation,
-} from '../utils/validationIntefaces/';
+  LikeRequestValidation,
+  CreateCommentRequestValidation,
+  EditCommentRequestValidation,
+  DeleteCommentRequestValidation,
+  GetCommentsRequestValidation,
+} from '../utils/validationInterfaces';
 import { BadRequestError } from '../errors';
 
-export const validateRegister = (req: Request, res: Response, next: NextFunction): void => {
-  typia.assert<RegisterRequestValidation>(req);
+const validateAuth = (req: Request, res: Response, next: NextFunction): void => {
+  typia.assert<AuthRequestValidation>(req);
   next();
 };
 
-export const validateLogin = (req: Request, res: Response, next: NextFunction): void => {
-  typia.assert<LoginRequestValidation>(req);
-  next();
-};
-
-export const validateCreatePost = (req: Request, res: Response, next: NextFunction): void => {
+const validateCreatePost = (req: Request, res: Response, next: NextFunction): void => {
   typia.assert<CreatePostRequestValidation>(req);
   next();
 };
 
-export const validatePatchPost = (req: Request, res: Response, next: NextFunction): void => {
-  typia.assert<PatchPostRequestValidation>(req);
+const validateEditPost = (req: Request, res: Response, next: NextFunction): void => {
+  typia.assert<EditPostRequestValidation>(req);
   next();
 };
 
-export const validateDeletePost = (req: Request, res: Response, next: NextFunction): void => {
+const validateDeletePost = (req: Request, res: Response, next: NextFunction): void => {
   typia.assert<DeletePostRequestValidation>(req);
   next();
 };
 
-export const validateGetPosts = (req: Request, res: Response, next: NextFunction): void => {
+const validateGetPosts = (req: Request, res: Response, next: NextFunction): void => {
   typia.assert<GetPostsRequestValidation>(req);
   next();
 };
 
-export const validateUpdateMyProfile = (req: Request, res: Response, next: NextFunction): void => {
-  typia.assert<UpdateMyProfileRequestValidation>(req);
+const validateEditProfile = (req: Request, res: Response, next: NextFunction): void => {
+  typia.assert<EditProfileRequestValidation>(req);
   next();
 };
 
-export const validateGetProfile = (req: Request, res: Response, next: NextFunction): void => {
+const validateGetProfile = (req: Request, res: Response, next: NextFunction): void => {
   typia.assert<GetProfileRequestValidation>(req);
   next();
 };
 
-export const validateGetProfiles = (req: Request, res: Response, next: NextFunction): void => {
+const validateGetProfiles = (req: Request, res: Response, next: NextFunction): void => {
   typia.assert<GetProfilesRequesValidation>(req);
   next();
 };
 
-export const validateGetImage = (req: Request, res: Response, next: NextFunction): void => {
+const validateGetImage = (req: Request, res: Response, next: NextFunction): void => {
   typia.assert<GetImageRequestValidation>(req);
   next();
 };
 
-export const validateCreateFollower = (req: Request, res: Response, next: NextFunction): void => {
-  typia.assert<CreateFollowerRequestValidation>(req);
+const validateFollower = (req: Request, res: Response, next: NextFunction): void => {
+  typia.assert<FollowerRequestValidation>(req);
   next();
 };
 
-export const validateDeleteFollower = (req: Request, res: Response, next: NextFunction): void => {
-  typia.assert<DeleteFollowerRequestValidation>(req);
+const validateLike = (req: Request, res: Response, next: NextFunction): void => {
+  typia.assert<LikeRequestValidation>(req);
   next();
 };
 
-export const validateImageFile = (file: Express.Multer.File | undefined, cb: Function): void => {
+const validateCreateComment = (req: Request, res: Response, next: NextFunction): void => {
+  typia.assert<CreateCommentRequestValidation>(req);
+  next();
+};
+
+const validateEditComment = (req: Request, res: Response, next: NextFunction): void => {
+  typia.assert<EditCommentRequestValidation>(req);
+  next();
+};
+
+const validateDeleteComment = (req: Request, res: Response, next: NextFunction): void => {
+  typia.assert<DeleteCommentRequestValidation>(req);
+  next();
+};
+
+const validateGetComments = (req: Request, res: Response, next: NextFunction): void => {
+  typia.assert<GetCommentsRequestValidation>(req);
+  next();
+};
+
+const validateImageFile = (file: Express.Multer.File | undefined, cb: Function): void => {
   if (file) {
     const filetypes = /jpeg|jpg|png|gif/;
 
@@ -88,4 +106,23 @@ export const validateImageFile = (file: Express.Multer.File | undefined, cb: Fun
       cb(new BadRequestError('Images Only!'));
     }
   }
+};
+
+export {
+  validateAuth,
+  validateCreatePost,
+  validateEditPost,
+  validateDeletePost,
+  validateGetPosts,
+  validateEditProfile,
+  validateGetProfile,
+  validateGetProfiles,
+  validateGetImage,
+  validateFollower,
+  validateLike,
+  validateCreateComment,
+  validateEditComment,
+  validateDeleteComment,
+  validateGetComments,
+  validateImageFile,
 };

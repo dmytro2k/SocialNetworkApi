@@ -11,8 +11,8 @@ export const comments = pgTable('comments', {
   postId: uuid('post_id')
     .notNull()
     .references(() => posts.postId, { onDelete: 'cascade', onUpdate: 'cascade' }),
-  commentEdited: boolean('comment_edited').default(false),
-  createdAt: timestamp('created_at').defaultNow(),
+  commentEdited: boolean('comment_edited').notNull().default(false),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
 });
 
 export const commentsRelations = relations(comments, ({ one }) => ({

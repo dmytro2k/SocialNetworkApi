@@ -17,7 +17,7 @@ export const createNewFollower = async ({ userId, followerUserId }: Follower) =>
   await DrizzleProvider.getInstance().insert(followers).values({ userId, followerUserId });
 };
 
-export const deleteFollowerByPK = async ({ userId, followerUserId }: Follower) => {
+export const dropFollower = async ({ userId, followerUserId }: Follower) => {
   const user = await getUserById({ userId });
   if (!user) {
     throw new NotFoundError('Not found such user');

@@ -1,7 +1,7 @@
-import { type Response } from 'express';
+import { type Request, type Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { TypedRequest, CreatePostBody, PatchPostBody, DeletePostBody, GetPostsParams } from '../utils/validationIntefaces/';
-import { createNewPost, deletePostById, getAllUserPosts, updatePost } from '../services/post';
+import { TypedRequest, CreatePostBody, EditPostBody, DeletePostBody, GetPostsParams } from '../utils/validationInterfaces';
+import { createNewPost, dropPostById, getAllUserPosts, updatePost, getAllPostsOfFollowedUsers } from '../services/post';
 import { createImage } from '../services/image';
 import { compressImageFile } from '../utils/image';
 
@@ -19,7 +19,7 @@ export const createPost = async (req: TypedRequest<CreatePostBody, {}, {}>, res:
   }
 };
 
-export const patchPost = async (req: TypedRequest<PatchPostBody, {}, {}>, res: Response) => {
+export const editPost = async (req: TypedRequest<EditPostBody, {}, {}>, res: Response) => {
   const { user, file } = req;
   const { postId, postContent } = req.body;
   const imageId = file ? await createImage({ file }) : undefined;
@@ -39,7 +39,7 @@ export const deletePost = async (req: TypedRequest<DeletePostBody, {}, {}>, res:
   const { user } = req;
   const { postId } = req.body;
 
-  await deletePostById({ postId, user });
+  await dropPostById({ postId, user });
 
   res.status(StatusCodes.NO_CONTENT).send();
 };
@@ -49,5 +49,12 @@ export const getPosts = async (req: TypedRequest<{}, GetPostsParams, {}>, res: R
   const { userId } = req.params;
 
   const posts = await getAllUserPosts({ userId, currentUserId: user!.userId });
+  res.status(StatusCodes.OK).json(posts);
+};
+
+export const getPostsOfFollowedUsers = async (req: Request, res: Response) => {
+  const { user } = req;
+
+  const posts = await getAllPostsOfFollowedUsers({ currentUserId: user!.userId });
   res.status(StatusCodes.OK).json(posts);
 };

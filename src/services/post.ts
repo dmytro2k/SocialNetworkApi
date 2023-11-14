@@ -1,7 +1,7 @@
 import { eq, sql, exists, and } from 'drizzle-orm';
 import { DrizzleProvider } from '../database/dataProvider';
 import { NotFoundError, BadRequestError, UnauthenticatedError } from '../errors';
-import { comments, likes, posts } from '../database/Schema';
+import { comments, followers, likes, posts } from '../database/Schema';
 import { User } from '../database/Schema';
 import { deleteImageById } from './image';
 import { getUserById } from './user';
@@ -18,7 +18,7 @@ type UpdatePostProps = {
   user?: User;
 };
 
-type DeletePostByIdProps = {
+type DropPostByIdProps = {
   postId: string;
   user?: User;
 };
@@ -34,6 +34,10 @@ type GetAllUserPostsProps = {
 
 type GetPostProps = {
   postId: string;
+  currentUserId: string;
+};
+
+type GetAllPostsOfFollowedUsersProps = {
   currentUserId: string;
 };
 
@@ -67,11 +71,15 @@ export const updatePost = async ({ postId, possibleUpdates, user }: UpdatePostPr
     deleteImageById({ imageId: post.imageId });
   }
 
-  [post] = await DrizzleProvider.getInstance().update(posts).set(postUpdates).where(eq(posts.postId, postId)).returning();
+  [post] = await DrizzleProvider.getInstance()
+    .update(posts)
+    .set({ ...postUpdates, postEdited: true })
+    .where(eq(posts.postId, postId))
+    .returning();
   return post;
 };
 
-export const deletePostById = async ({ postId, user }: DeletePostByIdProps) => {
+export const dropPostById = async ({ postId, user }: DropPostByIdProps) => {
   const post = await getPostById({ postId });
 
   if (!post) {
@@ -101,7 +109,7 @@ export const getAllUserPosts = async ({ userId, currentUserId }: GetAllUserPosts
     throw new NotFoundError('not found such user');
   }
 
-  const post = await DrizzleProvider.getInstance()
+  const allPosts = await DrizzleProvider.getInstance()
     .select({
       userId: posts.userId,
       postId: posts.postId,
@@ -111,20 +119,56 @@ export const getAllUserPosts = async ({ userId, currentUserId }: GetAllUserPosts
       createdAt: posts.createdAt,
       countLikes: sql<number>`cast(count(${likes.likeId}) as int)`,
       countComments: sql<number>`cast(count(${comments.commentId}) as int)`,
-      isLiked: exists(
+      isLiked: sql<boolean>`${exists(
         DrizzleProvider.getInstance()
           .select()
           .from(likes)
           .where(and(eq(likes.postId, posts.postId), eq(likes.userId, currentUserId)))
-      ),
+      )}`,
     })
     .from(posts)
     .leftJoin(likes, eq(posts.postId, likes.postId))
     .leftJoin(comments, eq(posts.postId, comments.postId))
     .where(eq(posts.userId, userId))
-    .groupBy(posts.postId);
+    .groupBy(posts.postId)
+    .orderBy(posts.createdAt);
 
-  return post;
+  return allPosts;
+};
+
+export const getAllPostsOfFollowedUsers = async ({ currentUserId }: GetAllPostsOfFollowedUsersProps) => {
+  const allPosts = await DrizzleProvider.getInstance()
+    .select({
+      userId: posts.userId,
+      postId: posts.postId,
+      postContent: posts.postContent,
+      imageId: posts.imageId,
+      postEdited: posts.postEdited,
+      createdAt: posts.createdAt,
+      countLikes: sql<number>`cast(count(${likes.likeId}) as int)`,
+      countComments: sql<number>`cast(count(${comments.commentId}) as int)`,
+      isLiked: sql<boolean>`${exists(
+        DrizzleProvider.getInstance()
+          .select()
+          .from(likes)
+          .where(and(eq(likes.postId, posts.postId), eq(likes.userId, currentUserId)))
+      )}`,
+    })
+    .from(posts)
+    .leftJoin(likes, eq(posts.postId, likes.postId))
+    .leftJoin(comments, eq(posts.postId, comments.postId))
+    .where(
+      exists(
+        DrizzleProvider.getInstance()
+          .select()
+          .from(followers)
+          .where(and(eq(followers.userId, posts.userId), eq(followers.followerUserId, currentUserId)))
+      )
+    )
+    .groupBy(posts.postId)
+    .orderBy(posts.createdAt);
+
+  return allPosts;
 };
 
 const getPost = async ({ postId, currentUserId }: GetPostProps) => {
@@ -138,12 +182,12 @@ const getPost = async ({ postId, currentUserId }: GetPostProps) => {
       createdAt: posts.createdAt,
       countLikes: sql<number>`cast(count(${likes.likeId}) as int)`,
       countComments: sql<number>`cast(count(${comments.commentId}) as int)`,
-      isLiked: exists(
+      isLiked: sql<boolean>`${exists(
         DrizzleProvider.getInstance()
           .select()
           .from(likes)
           .where(and(eq(likes.postId, posts.postId), eq(likes.userId, currentUserId)))
-      ),
+      )}`,
     })
     .from(posts)
     .leftJoin(likes, eq(posts.postId, likes.postId))

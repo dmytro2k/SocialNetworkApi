@@ -15,6 +15,13 @@
       "when": 1699882729078,
       "tag": "0001_vengeful_rocket_raccoon",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1699971647644,
+      "tag": "0002_military_ghost_rider",
+      "breakpoints": true
     }
   ]
 }

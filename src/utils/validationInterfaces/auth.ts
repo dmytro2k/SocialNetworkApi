@@ -1,10 +1,10 @@
 import { tags } from 'typia';
 
-export interface RegisterRequestValidation {
+export interface AuthRequestValidation {
   body: authBody;
 }
 
-export interface LoginRequestValidation {
+export interface AuthRequestValidation {
   body: authBody;
 }
 

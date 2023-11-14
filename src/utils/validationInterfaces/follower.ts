@@ -1,11 +1,7 @@
 import { tags } from 'typia';
 import { ParamsDictionary } from 'express-serve-static-core';
 
-export interface CreateFollowerRequestValidation {
-  params: FollowerParams;
-}
-
-export interface DeleteFollowerRequestValidation {
+export interface FollowerRequestValidation {
   params: FollowerParams;
 }
 

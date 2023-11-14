@@ -1,7 +1,6 @@
 import express from 'express';
 const router = express.Router();
 
-import { verifyToken } from '../middlewares/auth';
 import { validateGetImage } from '../middlewares/validation';
 import { getCompressedDefaultImage, getCompressedImage, getDefaultImage, getImage } from '../controllers/images';
 

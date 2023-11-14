@@ -17,12 +17,10 @@ export const createNewLike = async ({ userId, postId }: LikeProps) => {
     throw new BadRequestError('you already liked that post');
   }
 
-  [like] = await DrizzleProvider.getInstance().insert(likes).values({ userId, postId }).returning();
-
-  return like;
+  await DrizzleProvider.getInstance().insert(likes).values({ userId, postId }).returning();
 };
 
-export const deleteLike = async ({ userId, postId }: LikeProps) => {
+export const dropLike = async ({ userId, postId }: LikeProps) => {
   let [like] = await DrizzleProvider.getInstance()
     .select()
     .from(likes)

@@ -112,7 +112,9 @@ export const getAllProfiles = async ({ followerUserId, searchString }: GetProfil
     })
     .from(profiles)
     .leftJoin(followers, and(eq(profiles.userId, followers.userId), eq(followers.followerUserId, followerUserId)))
-    .where(like(profiles.profileName, `%${searchString}%`));
+    .where(like(profiles.profileName, `%${searchString}%`))
+    .orderBy(profiles.profileName);
+
   return allProfiles;
 };
 
@@ -127,7 +129,8 @@ export const getFollowedByUserProfiles = async ({ followerUserId, searchString }
     })
     .from(profiles)
     .innerJoin(followers, and(eq(profiles.userId, followers.userId), eq(followers.followerUserId, followerUserId)))
-    .where(and(like(profiles.profileName, `%${searchString}%`)));
+    .where(and(like(profiles.profileName, `%${searchString}%`)))
+    .orderBy(profiles.profileName);
 
   return allProfiles;
 };

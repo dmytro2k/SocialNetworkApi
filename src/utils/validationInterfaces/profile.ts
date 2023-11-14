@@ -1,11 +1,11 @@
 import { tags } from 'typia';
 import { ParamsDictionary } from 'express-serve-static-core';
 
-export interface UpdateMyProfileRequestValidation {
-  body: UpdateMyProfileBody;
+export interface EditProfileRequestValidation {
+  body: EditProfileBody;
 }
 
-export interface UpdateMyProfileBody {
+export interface EditProfileBody {
   profileName?: string;
   profileStatus?: string;
 }

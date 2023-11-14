@@ -9,11 +9,11 @@ export interface CreatePostBody {
   postContent: string;
 }
 
-export interface PatchPostRequestValidation {
-  body: PatchPostBody;
+export interface EditPostRequestValidation {
+  body: EditPostBody;
 }
 
-export interface PatchPostBody {
+export interface EditPostBody {
   postId: string & tags.Format<'uuid'>;
   postContent?: string;
 }

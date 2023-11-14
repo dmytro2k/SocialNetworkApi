@@ -1,4 +1,4 @@
-import { pgTable, text, uuid } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 import { InferSelectModel, InferInsertModel, relations } from 'drizzle-orm';
 import { users, images } from '../index';
 
@@ -11,6 +11,7 @@ export const profiles = pgTable('profiles', {
     .notNull()
     .references(() => users.userId, { onDelete: 'cascade', onUpdate: 'cascade' }),
   imageId: uuid('image_id').references(() => images.imageId, { onDelete: 'set null', onUpdate: 'cascade' }),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
 });
 
 export const profilesRelations = relations(profiles, ({ one }) => ({

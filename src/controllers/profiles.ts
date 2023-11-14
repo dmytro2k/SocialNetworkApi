@@ -1,7 +1,7 @@
 import { type Request, type Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { getAllProfiles, getFollowedByUserProfiles, getProfileByUserId, updateProfile } from '../services/profile';
-import { TypedRequest, GetProfileParams, UpdateMyProfileBody, GetProfilesBody } from '../utils/validationIntefaces/';
+import { TypedRequest, GetProfileParams, EditProfileBody, GetProfilesBody } from '../utils/validationInterfaces';
 import { createImage } from '../services/image';
 import { compressImageFile } from '../utils/image';
 
@@ -13,7 +13,7 @@ export const getProfile = async (req: TypedRequest<{}, GetProfileParams, {}>, re
   res.status(StatusCodes.OK).json(profile);
 };
 
-export const updateMyProfile = async (req: TypedRequest<UpdateMyProfileBody, {}, {}>, res: Response) => {
+export const editProfile = async (req: TypedRequest<EditProfileBody, {}, {}>, res: Response) => {
   const { user, file } = req;
   const { profileName, profileStatus } = req.body;
   const imageId = file ? await createImage({ file, imageType: 'avatar' }) : undefined;

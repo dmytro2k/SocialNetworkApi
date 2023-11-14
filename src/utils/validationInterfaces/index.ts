@@ -1,13 +1,13 @@
 import { Request } from 'express';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { ParsedQs } from 'qs';
-import { RegisterRequestValidation, LoginRequestValidation, authBody } from './auth';
+import { AuthRequestValidation, authBody } from './auth';
 import {
   CreatePostRequestValidation,
-  PatchPostRequestValidation,
+  EditPostRequestValidation,
   DeletePostRequestValidation,
   CreatePostBody,
-  PatchPostBody,
+  EditPostBody,
   DeletePostBody,
   GetPostsRequestValidation,
   GetPostsParams,
@@ -15,13 +15,24 @@ import {
 import {
   GetProfileRequestValidation,
   GetProfilesRequesValidation,
-  UpdateMyProfileRequestValidation,
+  EditProfileRequestValidation,
   GetProfilesBody,
-  UpdateMyProfileBody,
+  EditProfileBody,
   GetProfileParams,
 } from './profile';
 import { GetImageRequestValidation, GetImageParams } from './image';
-import { CreateFollowerRequestValidation, DeleteFollowerRequestValidation, FollowerParams } from './follower';
+import { FollowerRequestValidation, FollowerParams } from './follower';
+import { LikeRequestValidation, LikeParams } from './like';
+import {
+  CreateCommentRequestValidation,
+  EditCommentRequestValidation,
+  DeleteCommentRequestValidation,
+  GetCommentsRequestValidation,
+  CreateCommentBody,
+  EditCommentBody,
+  DeleteCommentBody,
+  GetCommentsParams,
+} from './comment';
 
 interface TypedRequest<BodyType, ParamsType extends ParamsDictionary, QueryType extends ParsedQs> extends Request {
   body: BodyType;
@@ -30,27 +41,35 @@ interface TypedRequest<BodyType, ParamsType extends ParamsDictionary, QueryType 
 }
 
 export {
-  RegisterRequestValidation,
-  LoginRequestValidation,
+  AuthRequestValidation,
   authBody,
   CreatePostRequestValidation,
-  PatchPostRequestValidation,
+  EditPostRequestValidation,
   DeletePostRequestValidation,
   CreatePostBody,
-  PatchPostBody,
+  EditPostBody,
   DeletePostBody,
   GetPostsRequestValidation,
   GetPostsParams,
   GetProfileRequestValidation,
   GetProfilesRequesValidation,
-  UpdateMyProfileRequestValidation,
+  EditProfileRequestValidation,
   GetProfilesBody,
-  UpdateMyProfileBody,
+  EditProfileBody,
   GetProfileParams,
   GetImageRequestValidation,
   GetImageParams,
-  CreateFollowerRequestValidation,
-  DeleteFollowerRequestValidation,
+  FollowerRequestValidation,
   FollowerParams,
   TypedRequest,
+  LikeRequestValidation,
+  LikeParams,
+  CreateCommentRequestValidation,
+  EditCommentRequestValidation,
+  DeleteCommentRequestValidation,
+  GetCommentsRequestValidation,
+  CreateCommentBody,
+  EditCommentBody,
+  DeleteCommentBody,
+  GetCommentsParams,
 };

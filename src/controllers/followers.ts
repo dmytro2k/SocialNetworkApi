@@ -1,7 +1,7 @@
 import { type Request, type Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { FollowerParams, TypedRequest } from '../utils/validationIntefaces/';
-import { createNewFollower, deleteFollowerByPK } from '../services/follower';
+import { FollowerParams, TypedRequest } from '../utils/validationInterfaces';
+import { createNewFollower, dropFollower } from '../services/follower';
 
 export const createFollower = async (req: TypedRequest<{}, FollowerParams, {}>, res: Response) => {
   const { user } = req;
@@ -9,14 +9,14 @@ export const createFollower = async (req: TypedRequest<{}, FollowerParams, {}>, 
 
   await createNewFollower({ userId, followerUserId: user!.userId });
 
-  res.status(StatusCodes.OK).send();
+  res.status(StatusCodes.CREATED).send();
 };
 
 export const deleteFollower = async (req: TypedRequest<{}, FollowerParams, {}>, res: Response) => {
   const { user } = req;
   const { userId } = req.params;
 
-  await deleteFollowerByPK({ userId, followerUserId: user!.userId });
+  await dropFollower({ userId, followerUserId: user!.userId });
 
-  res.status(StatusCodes.OK).send();
+  res.status(StatusCodes.NO_CONTENT).send();
 };
