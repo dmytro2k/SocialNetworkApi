@@ -1,6 +1,6 @@
 import { type Request, type Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { FollowerParams, TypedRequest } from '../utils/validationInterfaces';
+import { FollowerParams, TypedRequest } from '../interfaces';
 import { createNewFollower, dropFollower } from '../services/follower';
 
 export const createFollower = async (req: TypedRequest<{}, FollowerParams, {}>, res: Response) => {

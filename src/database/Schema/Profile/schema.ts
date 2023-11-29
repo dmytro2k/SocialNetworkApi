@@ -5,13 +5,14 @@ import { users, images } from '../index';
 export const profiles = pgTable('profiles', {
   profileId: uuid('profile_id').defaultRandom().primaryKey(),
   profileName: text('profile_name').notNull(),
-  profileStatus: text('profile_status'),
+  profileStatus: text('profile_status').notNull().default(''),
   userId: uuid('user_id')
     .unique()
     .notNull()
     .references(() => users.userId, { onDelete: 'cascade', onUpdate: 'cascade' }),
-  imageId: uuid('image_id').references(() => images.imageId, { onDelete: 'set null', onUpdate: 'cascade' }),
-  createdAt: timestamp('created_at').notNull().defaultNow(),
+  imageId: uuid('image_id').references(() => images.imageId, { onDelete: 'cascade', onUpdate: 'cascade' }),
+  updatedAt: timestamp('updated_at', { precision: 0, withTimezone: false }).notNull().defaultNow(),
+  createdAt: timestamp('created_at', { precision: 0, withTimezone: false }).notNull().defaultNow(),
 });
 
 export const profilesRelations = relations(profiles, ({ one }) => ({

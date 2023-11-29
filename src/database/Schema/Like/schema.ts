@@ -10,7 +10,7 @@ export const likes = pgTable('likes', {
   postId: uuid('post_id')
     .notNull()
     .references(() => posts.postId, { onDelete: 'cascade', onUpdate: 'cascade' }),
-  createdAt: timestamp('created_at').notNull().defaultNow(),
+  createdAt: timestamp('created_at', { precision: 0, withTimezone: false }).notNull().defaultNow(),
 });
 
 export const likesRelations = relations(likes, ({ one }) => ({

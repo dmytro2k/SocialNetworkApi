@@ -12,7 +12,8 @@ export const comments = pgTable('comments', {
     .notNull()
     .references(() => posts.postId, { onDelete: 'cascade', onUpdate: 'cascade' }),
   commentEdited: boolean('comment_edited').notNull().default(false),
-  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { precision: 0, withTimezone: false }).notNull().defaultNow(),
+  createdAt: timestamp('created_at', { precision: 0, withTimezone: false }).notNull().defaultNow(),
 });
 
 export const commentsRelations = relations(comments, ({ one }) => ({

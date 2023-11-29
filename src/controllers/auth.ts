@@ -1,6 +1,6 @@
 import { NextFunction, type Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { TypedRequest, authBody } from '../utils/validationInterfaces';
+import { TypedRequest, authBody } from '../interfaces';
 import { userRegister, userLogin } from '../services/auth';
 
 export const register = async (req: TypedRequest<authBody, {}, {}>, res: Response, next: NextFunction) => {

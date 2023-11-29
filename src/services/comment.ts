@@ -1,6 +1,6 @@
-import { eq, sql } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import { DrizzleProvider } from '../database/dataProvider';
-import { comments } from '../database/Schema';
+import { comments, profiles } from '../database/Schema';
 import { BadRequestError, NotFoundError, UnauthenticatedError } from '../errors';
 
 type CreateNewCommentsProps = {
@@ -39,7 +39,7 @@ export const updateComment = async ({ userId, commentId, commentContent }: Updat
     throw new BadRequestError('should have some text');
   }
 
-  let comment = await getCommentById({ commentId });
+  const comment = await getCommentById({ commentId });
 
   if (!comment) {
     throw new NotFoundError('not found such comment');
@@ -49,13 +49,13 @@ export const updateComment = async ({ userId, commentId, commentContent }: Updat
     throw new UnauthenticatedError('unauthorized');
   }
 
-  [comment] = await DrizzleProvider.getInstance()
+  const [updatedComment] = await DrizzleProvider.getInstance()
     .update(comments)
-    .set({ commentContent, commentEdited: true })
+    .set({ commentContent, commentEdited: true, updatedAt: new Date(Date.now()) })
     .where(eq(comments.commentId, commentId))
     .returning();
 
-  return comment;
+  return { ...comment, ...updatedComment };
 };
 
 export const dropComment = async ({ userId, commentId }: DropCommentProps) => {
@@ -74,16 +74,41 @@ export const dropComment = async ({ userId, commentId }: DropCommentProps) => {
 
 export const getAllComments = async ({ postId }: GetAllCommentsProps) => {
   const postComments = await DrizzleProvider.getInstance()
-    .select()
+    .select({
+      userId: comments.userId,
+      postId: comments.postId,
+      commentContent: comments.commentContent,
+      commentId: comments.commentId,
+      updatedAt: comments.updatedAt,
+      createdAt: comments.createdAt,
+      commentEdited: comments.commentEdited,
+      profileName: profiles.profileName,
+      profileImageId: profiles.imageId,
+    })
     .from(comments)
+    .innerJoin(profiles, eq(comments.userId, profiles.userId))
     .where(eq(comments.postId, postId))
-    .orderBy(comments.createdAt);
+    .orderBy(desc(comments.createdAt));
 
   return postComments;
 };
 
 export const getCommentById = async ({ commentId }: GetCommentByIdProps) => {
-  const [comment] = await DrizzleProvider.getInstance().select().from(comments).where(eq(comments.commentId, commentId));
+  const [comment] = await DrizzleProvider.getInstance()
+    .select({
+      userId: comments.userId,
+      postId: comments.postId,
+      commentContent: comments.commentContent,
+      commentId: comments.commentId,
+      updatedAt: comments.updatedAt,
+      createdAt: comments.createdAt,
+      commentEdited: comments.commentEdited,
+      profileName: profiles.profileName,
+      profileImageId: profiles.imageId,
+    })
+    .from(comments)
+    .innerJoin(profiles, eq(comments.userId, profiles.userId))
+    .where(eq(comments.commentId, commentId));
 
   return comment;
 };

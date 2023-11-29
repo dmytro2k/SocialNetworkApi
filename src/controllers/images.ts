@@ -1,7 +1,7 @@
 import { type Request, type Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { getImageById } from '../services/image';
-import { GetImageParams, TypedRequest } from '../utils/validationInterfaces';
+import { GetImageParams, TypedRequest } from '../interfaces';
 import path from 'path';
 
 export const getImage = async (req: TypedRequest<{}, GetImageParams, {}>, res: Response) => {

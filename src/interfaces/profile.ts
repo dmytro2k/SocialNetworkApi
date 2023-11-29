@@ -6,19 +6,20 @@ export interface EditProfileRequestValidation {
 }
 
 export interface EditProfileBody {
-  profileName?: string;
-  profileStatus?: string;
+  profileName: string;
+  profileStatus: string;
 }
 
 export interface GetProfileRequestValidation {
-  params: GetProfileParams;
+  params: ProfileParams;
 }
 
-export interface GetProfileParams extends ParamsDictionary {
+export interface ProfileParams extends ParamsDictionary {
   userId: string & tags.Format<'uuid'>;
 }
 
 export interface GetProfilesRequesValidation {
+  params: ProfileParams;
   body: GetProfilesBody;
 }
 

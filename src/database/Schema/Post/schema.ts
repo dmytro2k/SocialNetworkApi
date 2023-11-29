@@ -8,9 +8,10 @@ export const posts = pgTable('posts', {
   userId: uuid('user_id')
     .notNull()
     .references(() => users.userId, { onDelete: 'cascade', onUpdate: 'cascade' }),
-  imageId: uuid('image_id').references(() => images.imageId, { onDelete: 'set null', onUpdate: 'cascade' }),
+  imageId: uuid('image_id').references(() => images.imageId, { onDelete: 'cascade', onUpdate: 'cascade' }),
   postEdited: boolean('post_edited').notNull().default(false),
-  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { precision: 0, withTimezone: false }).notNull().defaultNow(),
+  createdAt: timestamp('created_at', { precision: 0, withTimezone: false }).notNull().defaultNow(),
 });
 
 export const postsRelations = relations(posts, ({ one, many }) => ({

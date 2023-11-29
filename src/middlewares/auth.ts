@@ -11,9 +11,7 @@ export const verifyToken = async (req: Request, res: Response, next: NextFunctio
   }
 
   const token = authHeader.split(' ')[1];
-
   const payload = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
-
   const user = await getUserById({ userId: payload.id });
 
   if (!user) {
@@ -21,6 +19,5 @@ export const verifyToken = async (req: Request, res: Response, next: NextFunctio
   }
 
   req.user = user;
-
   next();
 };

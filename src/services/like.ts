@@ -13,7 +13,8 @@ export const createNewLike = async ({ userId, postId }: LikeProps) => {
     .select()
     .from(likes)
     .where(and(eq(likes.userId, userId), eq(likes.postId, postId)));
-  if (like !== null || like !== undefined) {
+
+  if (like) {
     throw new BadRequestError('you already liked that post');
   }
 
@@ -25,6 +26,7 @@ export const dropLike = async ({ userId, postId }: LikeProps) => {
     .select()
     .from(likes)
     .where(and(eq(likes.userId, userId), eq(likes.postId, postId)));
+
   if (!like) {
     throw new NotFoundError('not found such like');
   }

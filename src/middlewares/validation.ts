@@ -16,7 +16,9 @@ import {
   EditCommentRequestValidation,
   DeleteCommentRequestValidation,
   GetCommentsRequestValidation,
-} from '../utils/validationInterfaces';
+  ChatRoomRequestValidation,
+  GetAllMessagesRequestValidation,
+} from '../interfaces';
 import { BadRequestError } from '../errors';
 
 const validateAuth = (req: Request, res: Response, next: NextFunction): void => {
@@ -94,6 +96,16 @@ const validateGetComments = (req: Request, res: Response, next: NextFunction): v
   next();
 };
 
+const validateGetChatRoom = (req: Request, res: Response, next: NextFunction): void => {
+  typia.assert<ChatRoomRequestValidation>(req);
+  next();
+};
+
+const validateGetAllMessages = (req: Request, res: Response, next: NextFunction): void => {
+  typia.assert<GetAllMessagesRequestValidation>(req);
+  next();
+};
+
 const validateImageFile = (file: Express.Multer.File | undefined, cb: Function): void => {
   if (file) {
     const filetypes = /jpeg|jpg|png|gif/;
@@ -125,4 +137,6 @@ export {
   validateDeleteComment,
   validateGetComments,
   validateImageFile,
+  validateGetChatRoom,
+  validateGetAllMessages,
 };

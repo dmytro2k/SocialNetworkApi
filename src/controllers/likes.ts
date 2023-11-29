@@ -1,7 +1,7 @@
 import { type Request, type Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { createNewLike, dropLike } from '../services/like';
-import { LikeParams, TypedRequest } from '../utils/validationInterfaces';
+import { LikeParams, TypedRequest } from '../interfaces';
 
 export const createLike = async (req: TypedRequest<{}, LikeParams, {}>, res: Response) => {
   const { user } = req;

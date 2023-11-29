@@ -1,6 +1,5 @@
 import { eq } from 'drizzle-orm';
 import { DrizzleProvider } from '../database/dataProvider';
-import { NotFoundError } from '../errors';
 import { users } from '../database/Schema';
 
 type GetUserByEmailProps = {

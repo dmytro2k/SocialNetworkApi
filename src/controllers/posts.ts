@@ -1,6 +1,6 @@
 import { type Request, type Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { TypedRequest, CreatePostBody, EditPostBody, DeletePostBody, GetPostsParams } from '../utils/validationInterfaces';
+import { TypedRequest, CreatePostBody, EditPostBody, DeletePostBody, GetPostsParams } from '../interfaces';
 import { createNewPost, dropPostById, getAllUserPosts, updatePost, getAllPostsOfFollowedUsers } from '../services/post';
 import { createImage } from '../services/image';
 import { compressImageFile } from '../utils/image';
@@ -23,16 +23,13 @@ export const editPost = async (req: TypedRequest<EditPostBody, {}, {}>, res: Res
   const { user, file } = req;
   const { postId, postContent } = req.body;
   const imageId = file ? await createImage({ file }) : undefined;
+  if (file) await compressImageFile('post', file.filename, 20, file.mimetype);
 
-  const possibleUpdates = { postContent, imageId };
+  const postUpdates = { postContent, imageId };
 
-  const post = await updatePost({ postId, possibleUpdates, user });
+  const post = await updatePost({ postId, postUpdates, user });
 
   res.status(StatusCodes.OK).json(post);
-
-  if (file) {
-    res.on('finish', async () => compressImageFile('post', file.filename, 20, file.mimetype));
-  }
 };
 
 export const deletePost = async (req: TypedRequest<DeletePostBody, {}, {}>, res: Response) => {

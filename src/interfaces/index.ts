@@ -18,7 +18,7 @@ import {
   EditProfileRequestValidation,
   GetProfilesBody,
   EditProfileBody,
-  GetProfileParams,
+  ProfileParams,
 } from './profile';
 import { GetImageRequestValidation, GetImageParams } from './image';
 import { FollowerRequestValidation, FollowerParams } from './follower';
@@ -33,6 +33,9 @@ import {
   DeleteCommentBody,
   GetCommentsParams,
 } from './comment';
+import { ChatRoomRequestValidation, ChatRoomParams } from './chatRoom';
+import { TypedSocket, JoinRoomEventPayload, ErrorEventPayload, ReceiveMessageEventPayload, SendMessageEventPayload } from './socket';
+import { GetAllMessagesRequestValidation, GetAllMessagesParams } from './message';
 
 interface TypedRequest<BodyType, ParamsType extends ParamsDictionary, QueryType extends ParsedQs> extends Request {
   body: BodyType;
@@ -56,7 +59,7 @@ export {
   EditProfileRequestValidation,
   GetProfilesBody,
   EditProfileBody,
-  GetProfileParams,
+  ProfileParams,
   GetImageRequestValidation,
   GetImageParams,
   FollowerRequestValidation,
@@ -72,4 +75,13 @@ export {
   EditCommentBody,
   DeleteCommentBody,
   GetCommentsParams,
+  ChatRoomRequestValidation,
+  ChatRoomParams,
+  TypedSocket,
+  JoinRoomEventPayload as AuthEventPayload,
+  ErrorEventPayload,
+  ReceiveMessageEventPayload,
+  SendMessageEventPayload,
+  GetAllMessagesRequestValidation,
+  GetAllMessagesParams,
 };

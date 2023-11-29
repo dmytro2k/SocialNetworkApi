@@ -15,7 +15,7 @@ export interface EditPostRequestValidation {
 
 export interface EditPostBody {
   postId: string & tags.Format<'uuid'>;
-  postContent?: string;
+  postContent: string;
 }
 
 export interface DeletePostRequestValidation {

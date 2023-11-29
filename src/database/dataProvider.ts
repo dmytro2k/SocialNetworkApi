@@ -22,6 +22,5 @@ export class DrizzleProvider {
 
   public static async runMigrations() {
     await migrate(this.getInstance(), { migrationsFolder: './drizzle' });
-    pool.end();
   }
 }

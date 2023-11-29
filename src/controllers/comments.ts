@@ -1,7 +1,7 @@
 import { type Request, type Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { createNewComment, dropComment, getAllComments, updateComment } from '../services/comment';
-import { CreateCommentBody, DeleteCommentBody, EditCommentBody, GetCommentsParams, TypedRequest } from '../utils/validationInterfaces';
+import { CreateCommentBody, DeleteCommentBody, EditCommentBody, GetCommentsParams, TypedRequest } from '../interfaces';
 
 export const createComment = async (req: TypedRequest<CreateCommentBody, {}, {}>, res: Response) => {
   const { user } = req;

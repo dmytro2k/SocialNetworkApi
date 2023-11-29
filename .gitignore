@@ -6,5 +6,7 @@ dist
 .DS_Store
 src/.DS_Store
 **/.DS_Store
-images/*
-images/**
+images/avatar/compressed/*
+images/avatar/originals/*
+images/post/compressed/*
+images/post/originals/*

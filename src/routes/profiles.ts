@@ -7,8 +7,8 @@ import { validateGetProfile, validateGetProfiles, validateEditProfile } from '..
 import { uploadAvatarImage } from '../middlewares/uploadImage';
 
 router.route('/update').patch(verifyToken, uploadAvatarImage.single('file'), validateEditProfile, editProfile);
-router.route('/all').get(verifyToken, validateGetProfiles, getProfiles);
-router.route('/followed').get(verifyToken, validateGetProfiles, getFollowedProfiles);
+router.route('/all/:userId').post(verifyToken, validateGetProfiles, getProfiles);
+router.route('/followed/:userId').post(verifyToken, validateGetProfiles, getFollowedProfiles);
 router.route('/:userId').get(verifyToken, validateGetProfile, getProfile);
 
 export default router;

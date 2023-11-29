@@ -5,6 +5,8 @@ import { comments, commentsRelations, Comment, NewComment } from './Comment/sche
 import { images, imagesRelations, imageTypeEnum, Image, NewImage } from './Image/schema';
 import { profiles, profilesRelations, Profile, NewProfile } from './Profile/schema';
 import { followers, followersRelations, Follower, NewFollower } from './Followers/schema';
+import { chatRooms, chatRoomsRelations, ChatRoom, NewChatRoom } from './ChatRooms/schema';
+import { messages, messagesRelations, Message, NewMessage } from './Messages/schema';
 
 export {
   users,
@@ -36,4 +38,12 @@ export {
   followersRelations,
   Follower,
   NewFollower,
+  chatRooms,
+  chatRoomsRelations,
+  ChatRoom,
+  NewChatRoom,
+  messages,
+  messagesRelations,
+  Message,
+  NewMessage,
 };

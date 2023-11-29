@@ -1,7 +1,7 @@
-import { eq, sql, exists, and } from 'drizzle-orm';
+import { eq, sql, exists, and, desc } from 'drizzle-orm';
 import { DrizzleProvider } from '../database/dataProvider';
 import { NotFoundError, BadRequestError, UnauthenticatedError } from '../errors';
-import { comments, followers, likes, posts } from '../database/Schema';
+import { comments, followers, likes, posts, profiles } from '../database/Schema';
 import { User } from '../database/Schema';
 import { deleteImageById } from './image';
 import { getUserById } from './user';
@@ -14,7 +14,7 @@ type CreateNewPostProps = {
 
 type UpdatePostProps = {
   postId: string;
-  possibleUpdates: { postContent?: string; imageId?: string };
+  postUpdates: { postContent: string; imageId?: string };
   user?: User;
 };
 
@@ -50,14 +50,12 @@ export const createNewPost = async ({ postContent, user, imageId }: CreateNewPos
   return post;
 };
 
-export const updatePost = async ({ postId, possibleUpdates, user }: UpdatePostProps) => {
-  const postUpdates = Object.fromEntries(Object.entries(possibleUpdates).filter((el) => el[1] !== undefined && el[1] !== ''));
-
-  if (!postUpdates) {
+export const updatePost = async ({ postId, postUpdates, user }: UpdatePostProps) => {
+  if (!postUpdates.postContent) {
     throw new BadRequestError('There is no changes');
   }
 
-  let post = await getPostById({ postId });
+  const post = await getPost({ postId, currentUserId: user!.userId });
 
   if (!post) {
     throw new NotFoundError('Not found such a post');
@@ -67,16 +65,16 @@ export const updatePost = async ({ postId, possibleUpdates, user }: UpdatePostPr
     throw new UnauthenticatedError('Only Author can update a post');
   }
 
-  if (post.imageId && possibleUpdates.imageId) {
+  if (post.imageId && postUpdates.imageId) {
     deleteImageById({ imageId: post.imageId });
   }
 
-  [post] = await DrizzleProvider.getInstance()
+  const [updatedPost] = await DrizzleProvider.getInstance()
     .update(posts)
-    .set({ ...postUpdates, postEdited: true })
+    .set({ ...postUpdates, postEdited: true, updatedAt: new Date(Date.now()) })
     .where(eq(posts.postId, postId))
     .returning();
-  return post;
+  return { ...post, ...updatedPost };
 };
 
 export const dropPostById = async ({ postId, user }: DropPostByIdProps) => {
@@ -116,9 +114,12 @@ export const getAllUserPosts = async ({ userId, currentUserId }: GetAllUserPosts
       postContent: posts.postContent,
       imageId: posts.imageId,
       postEdited: posts.postEdited,
+      updatedAt: posts.updatedAt,
       createdAt: posts.createdAt,
-      countLikes: sql<number>`cast(count(${likes.likeId}) as int)`,
-      countComments: sql<number>`cast(count(${comments.commentId}) as int)`,
+      profileName: profiles.profileName,
+      profileImageId: profiles.imageId,
+      countLikes: sql<number>`cast(count(distinct ${likes.likeId}) as int)`,
+      countComments: sql<number>`cast(count(distinct ${comments.commentId}) as int)`,
       isLiked: sql<boolean>`${exists(
         DrizzleProvider.getInstance()
           .select()
@@ -129,9 +130,10 @@ export const getAllUserPosts = async ({ userId, currentUserId }: GetAllUserPosts
     .from(posts)
     .leftJoin(likes, eq(posts.postId, likes.postId))
     .leftJoin(comments, eq(posts.postId, comments.postId))
+    .innerJoin(profiles, eq(profiles.userId, posts.userId))
     .where(eq(posts.userId, userId))
-    .groupBy(posts.postId)
-    .orderBy(posts.createdAt);
+    .groupBy(posts.postId, profiles.profileName, profiles.imageId)
+    .orderBy(desc(posts.createdAt));
 
   return allPosts;
 };
@@ -144,9 +146,12 @@ export const getAllPostsOfFollowedUsers = async ({ currentUserId }: GetAllPostsO
       postContent: posts.postContent,
       imageId: posts.imageId,
       postEdited: posts.postEdited,
+      updatedAt: posts.updatedAt,
       createdAt: posts.createdAt,
-      countLikes: sql<number>`cast(count(${likes.likeId}) as int)`,
-      countComments: sql<number>`cast(count(${comments.commentId}) as int)`,
+      profileName: profiles.profileName,
+      profileImageId: profiles.imageId,
+      countLikes: sql<number>`cast(count(distinct ${likes.likeId}) as int)`,
+      countComments: sql<number>`cast(count(distinct ${comments.commentId}) as int)`,
       isLiked: sql<boolean>`${exists(
         DrizzleProvider.getInstance()
           .select()
@@ -157,6 +162,7 @@ export const getAllPostsOfFollowedUsers = async ({ currentUserId }: GetAllPostsO
     .from(posts)
     .leftJoin(likes, eq(posts.postId, likes.postId))
     .leftJoin(comments, eq(posts.postId, comments.postId))
+    .innerJoin(profiles, eq(profiles.userId, posts.userId))
     .where(
       exists(
         DrizzleProvider.getInstance()
@@ -165,8 +171,8 @@ export const getAllPostsOfFollowedUsers = async ({ currentUserId }: GetAllPostsO
           .where(and(eq(followers.userId, posts.userId), eq(followers.followerUserId, currentUserId)))
       )
     )
-    .groupBy(posts.postId)
-    .orderBy(posts.createdAt);
+    .groupBy(posts.postId, profiles.profileName, profiles.imageId)
+    .orderBy(desc(posts.createdAt));
 
   return allPosts;
 };
@@ -179,9 +185,12 @@ const getPost = async ({ postId, currentUserId }: GetPostProps) => {
       postContent: posts.postContent,
       imageId: posts.imageId,
       postEdited: posts.postEdited,
+      updatedAt: posts.updatedAt,
       createdAt: posts.createdAt,
-      countLikes: sql<number>`cast(count(${likes.likeId}) as int)`,
-      countComments: sql<number>`cast(count(${comments.commentId}) as int)`,
+      profileName: profiles.profileName,
+      profileImageId: profiles.imageId,
+      countLikes: sql<number>`cast(count(distinct ${likes.likeId}) as int)`,
+      countComments: sql<number>`cast(count(distinct ${comments.commentId}) as int)`,
       isLiked: sql<boolean>`${exists(
         DrizzleProvider.getInstance()
           .select()
@@ -192,8 +201,9 @@ const getPost = async ({ postId, currentUserId }: GetPostProps) => {
     .from(posts)
     .leftJoin(likes, eq(posts.postId, likes.postId))
     .leftJoin(comments, eq(posts.postId, comments.postId))
+    .innerJoin(profiles, eq(profiles.userId, posts.userId))
     .where(eq(posts.postId, postId))
-    .groupBy(posts.postId);
+    .groupBy(posts.postId, profiles.profileName, profiles.imageId);
 
   return post;
 };
