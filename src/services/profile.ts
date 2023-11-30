@@ -70,7 +70,7 @@ export const getMyProfile = async ({ userId }: GetProfileByUserIdProps) => {
 export const getProfileByUserId = async ({ userId, followerUserId }: getProfileByIdProps) => {
   const user = await getUserById({ userId });
   if (!user) {
-    throw new NotFoundError('Not found such user');
+    throw new NotFoundError('not found such user');
   }
 
   const [profile] = await DrizzleProvider.getInstance()

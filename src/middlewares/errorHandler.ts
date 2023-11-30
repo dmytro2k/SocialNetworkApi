@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { JsonWebTokenError } from 'jsonwebtoken';
 import { CustomError } from '../errors';
-import { TypedSocket } from '../interfaces';
 
 export const errorHandlerMiddleware = (err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof CustomError) {

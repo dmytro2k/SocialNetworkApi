@@ -34,7 +34,13 @@ import {
   GetCommentsParams,
 } from './comment';
 import { ChatRoomRequestValidation, ChatRoomParams } from './chatRoom';
-import { TypedSocket, JoinRoomEventPayload, ErrorEventPayload, ReceiveMessageEventPayload, SendMessageEventPayload } from './socket';
+import {
+  JoinRoomEventPayload,
+  ErrorEventPayload,
+  ReceiveMessageEventPayload,
+  SendMessageEventPayload,
+  UpdateMessageEventPayload,
+} from './socket';
 import { GetAllMessagesRequestValidation, GetAllMessagesParams } from './message';
 
 interface TypedRequest<BodyType, ParamsType extends ParamsDictionary, QueryType extends ParsedQs> extends Request {
@@ -77,11 +83,11 @@ export {
   GetCommentsParams,
   ChatRoomRequestValidation,
   ChatRoomParams,
-  TypedSocket,
-  JoinRoomEventPayload as AuthEventPayload,
+  JoinRoomEventPayload,
   ErrorEventPayload,
   ReceiveMessageEventPayload,
   SendMessageEventPayload,
+  UpdateMessageEventPayload,
   GetAllMessagesRequestValidation,
   GetAllMessagesParams,
 };

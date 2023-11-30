@@ -20,9 +20,9 @@ import messagesRouter from './routes/messages';
 import { DrizzleProvider } from './database/dataProvider';
 import { notFoundMiddleware } from './middlewares/notFound';
 import { errorHandlerMiddleware } from './middlewares/errorHandler';
-import { AuthEventPayload, SendMessageEventPayload } from './interfaces';
+import { JoinRoomEventPayload, SendMessageEventPayload, UpdateMessageEventPayload } from './interfaces';
 import SocketIO from 'socket.io';
-import { createNewMessage } from './services/message';
+import { createNewMessage, updateMessage } from './services/message';
 import { verifyToken } from './utils/auth';
 import { getChatRoomById } from './services/chatRoom';
 
@@ -37,7 +37,7 @@ export const io = new SocketIO.Server(server, {
 
 io.on('connection', async (socket) => {
   try {
-    socket.on('JoinRoomEvent', async (payload: AuthEventPayload) => {
+    socket.on('JoinRoomEvent', async (payload: JoinRoomEventPayload) => {
       const user = await verifyToken({ token: payload.token });
       const chatRoom = await getChatRoomById({ chatRoomId: payload.chatRoomId });
       if (chatRoom.firstUserId !== user.userId && chatRoom.secondUserId !== user.userId) {
@@ -45,6 +45,13 @@ io.on('connection', async (socket) => {
         return;
       }
       socket.join(payload.chatRoomId);
+    });
+
+    socket.on('UpdateMessageEvent', async (payload: UpdateMessageEventPayload) => {
+      const { chatRoomId, messageContent, messageId, userId } = payload;
+      const message = await updateMessage({ messageContent, messageId, userId });
+
+      io.to(chatRoomId).emit('ReceiveUpdateMessageEvent', message);
     });
 
     socket.on('SendMessageEvent', async (payload: SendMessageEventPayload) => {

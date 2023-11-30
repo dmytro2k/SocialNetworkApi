@@ -58,6 +58,7 @@ export const updateMessage = async ({ userId, messageId, messageContent }: Updat
   const [updatedMessage] = await DrizzleProvider.getInstance()
     .update(messages)
     .set({ messageContent, messageEdited: true, updatedAt: new Date(Date.now()) })
+    .where(eq(messages.messageId, messageId))
     .returning();
 
   return updatedMessage;
